@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Train Time</title>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <!-- Firebase References -->
+    <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/6.0.4/firebase-database.js"></script>
+    <!-- Moment.js Reference -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+    <script src="assets/javascript/app.js"></script>
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <!-- <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-app.js"></script>
+
+    //TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries
+    <script src="https://www.gstatic.com/firebasejs/7.2.2/firebase-analytics.js"></script> --> -->
+
+
+</head>
+
+<body>
+    <!-- Employee Tracker -->
+    <div class="container">
+        <!-- Jumbotron -->
+        <div class="jumbotron" style="background-color: black; color: white">
+            <h1 class="text-center">Anytime is Train Time</h1>
+            <h3 class="text-center">Choo Choo. Chee Chee</h3>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Current Employees-->
+                <div class="card mb-4">
+                    <div class="card-header">Current Train Schedule</div>
+                    <div class="card-body">
+                        <table class="table table-sm table-hover" id='Train-table'>
+                            <thead>
+                                <tr>
+
+                                    <th scope="col">Train Name</th>
+                                    <th scope="col">Destination</th>
+                                    <th scope="col">Frequency (min</th>
+                                    <th scope="col">Next Arrival</th>
+                                    <th scope="col">Minutes Away</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Add Employee  -->
+                <div class="card mb-4">
+                    <div class="card-header">Add Train</div>
+                    <div class="card-body">
+                        <!-- Entry Form -->
+                        <form>
+                            <div class="form-group">
+                                <label for="train-name-input">Train Name</label>
+                                <input class="form-control" id="train-name-input" placeholder="Salem Train" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label for="destination-input">Destination</label>
+                                <input class="form-control" id="destination-input" placeholder="Boston" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label for="firsttrain-input">First Train Time (HH:mm-military time)</label>
+                                <input class="form-control" id="firsttrain-input" placeholder="01:20AM" type="text">
+                            </div>
+                            <div class="form-group">
+                                <label for="frequency-input">Frequency (min)</label>
+                                <input class="form-control" id="frequency-input" placeholder="20" type="text">
+                            </div>
+                            <button class="btn btn-primary float-right" id="add-train-btn">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        // Your web app's Firebase configuration
+
+
+        $(document).ready(function () {
+
+            var firebaseConfig = {
+                apiKey: "AIzaSyAhAO-tWLMEb6IPmwRiqKyx2XJLfTJuRss",
+                authDomain: "naima-project.firebaseapp.com",
+                databaseURL: "https://naima-project.firebaseio.com",
+                projectId: "naima-project",
+                storageBucket: "naima-project.appspot.com",
+                messagingSenderId: "775222124621",
+                appId: "1:775222124621:web:88ea8f4335b55d01cb3c04",
+                measurementId: "G-7QHSMX2JTP"
+            };
+
+            // Initialize Firebase
+
+            firebase.initializeApp(firebaseConfig);
+
+            var database = firebase.database();
+
+            $("#add-train-btn").click(function (event) {
+                event.preventDefault();
+
+                var trainname = $("#train-name-input").val().trim();
+                var traindestination = $("#destination-input").val().trim();
+                var firsttrain = $("#firsttrain-input").val().trim();
+                var trainfrequency = $("#frequency-input").val().trim();
+
+                var newtrain = {
+                    name: trainname,
+                    destination: traindestination,
+                    firsttraintime: firsttrain,
+                    Frequency: trainfrequency,
+                };
+                //upload the train data to database
+
+                database.ref().push(newtrain);
+
+                console.log(newtrain);
+
+                //clear all data from the input area
+
+
+                $("#train-name-input").val("");
+                $("#destination-input").val("");
+                $("#firsttrain-input").val("");
+                $("#frequency-input"); val("");
+
+            });
+
+
+            database.ref().on('child_added', function (childsnapshot) {
+
+                console.log(childsnapshot.val());
+
+
+                //create firebase event for adding train when the user add info.
+
+
+                var trainname = childsnapshot.val().name;
+                var traindestination = childsnapshot.val().destination;
+                var firsttrain = childsnapshot.val().firsttraintime;
+                var trainfrequency = childsnapshot.val().Frequency;
+
+                console.log(trainname);
+                console.log(traindestination);
+                console.log(firsttrain);
+                console.log(trainfrequency);
+
+                var timearrival = moment();
+                var minitesaway = moment();
+
+
+
+
+
+            });
+
+
+
+        });
+
+
+
+
+    </script>
+</body>
+
+</html>

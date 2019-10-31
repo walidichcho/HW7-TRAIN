@@ -100,7 +100,16 @@ $(document).ready(function () {
 
 
         $("#Train-table > tbody").append("<tr><td>" + trainname + "</td><td>" + traindestination + "</td><td>" + trainfrequency + "</td><td>" + nextarrival + "</td><td>" + minuntil + "</td></tr>");
+
+
     });
 });
 
 // Write a setInterval function that goes and updates the "minues away" value. If the value is < 5 turn it red 
+var currenttime = moment();
+
+moment(currenttime).format("hh:mm");
+
+setInterval(function () {
+    window.location.replace();
+}, 5000);

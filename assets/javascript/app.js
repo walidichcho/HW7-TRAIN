@@ -1,7 +1,10 @@
-// Your web app's Firebase configuration
+
+
 
 
 $(document).ready(function () {
+
+    //  web app's Firebase configuration
 
     var firebaseConfig = {
         apiKey: "AIzaSyAhAO-tWLMEb6IPmwRiqKyx2XJLfTJuRss",
@@ -20,31 +23,32 @@ $(document).ready(function () {
 
     var database = firebase.database();
 
+    //create a function when we click submit button/get the value of each input and trim it
+
     $("#add-train-btn").click(function (event) {
         event.preventDefault();
 
-        var trainname = $("#train-name-input").val().trim();
-        var traindestination = $("#destination-input").val().trim();
-        var firsttrain = $("#firsttrain-input").val().trim();
-        var trainfrequency = $("#frequency-input").val().trim();
+        // variable for each entry
+        var trainName = $("#train-name-input").val().trim();
+        var trainDestination = $("#destination-input").val().trim();
+        var firstTrain = $("#firsttrain-input").val().trim();
+        var trainFrequency = $("#frequency-input").val().trim();
 
-
-
-
-        var newtrain = {
-            name: trainname,
-            destination: traindestination,
-            firsttraintime: firsttrain,
-            Frequency: trainfrequency,
+        //variable for data base storage
+        var newTrain = {
+            name: trainName,
+            destination: trainDestination,
+            firsttraintime: firstTrain,
+            Frequency: trainFrequency,
         };
-        //upload the train data to database
 
-        database.ref().push(newtrain);
+        //upload or push the train data to database
 
-        console.log(newtrain);
+        database.ref().push(newTrain);
+
+        console.log(newTrain);
 
         //clear all data from the input area
-
 
         $("#train-name-input").val("");
         $("#destination-input").val("");
@@ -53,63 +57,56 @@ $(document).ready(function () {
 
     });
 
+    // create a snapshot for each entry on click
 
     database.ref().on('child_added', function (childsnapshot) {
 
         console.log(childsnapshot.val());
 
+        var trainName = childsnapshot.val().name;
+        var trainDestination = childsnapshot.val().destination;
+        var firstTrain = childsnapshot.val().firsttraintime;
+        var trainFrequency = childsnapshot.val().Frequency;
 
-        //create firebase event for adding train when the user add info.
+        console.log(trainName);
+        console.log(trainDestination);
+        console.log(firstTrain);
+        console.log(trainFrequency);
 
+        //use mement function to calculate next train time and time away
 
-        var trainname = childsnapshot.val().name;
-        var traindestination = childsnapshot.val().destination;
-        var firsttrain = childsnapshot.val().firsttraintime;
-        var trainfrequency = childsnapshot.val().Frequency;
+        var currentTime = moment();
+        console.log("current time : " + moment(currentTime).format("hh:mm"));
+        moment(currentTime).format("hh:mm");
 
-        console.log(trainname);
-        console.log(traindestination);
-        console.log(firsttrain);
-        console.log(trainfrequency);
-
-        var currenttime = moment();
-        console.log("current time : " + moment(currenttime).format("hh:mm"));
-        moment(currenttime).format("hh:mm");
-
-
-        // var traintime = moment().unix(moment(firsttrain).format("hh:mm"));
-        // console.log(traintime);
-
-        var trainTimeConverted = moment(firsttrain, "hh:mm");
+        var trainTimeConverted = moment(firstTrain, "hh:mm");
         console.log(trainTimeConverted);
 
+        //difference between current time and the first train in min.
         var difference = moment().diff(moment(trainTimeConverted), "minutes");
         console.log(difference);
 
-        //tme remainder
-        // trainDestinationTimeInMinutes
-        var trainremain = difference % trainfrequency;
+        //time remain
+        var trainRemain = difference % trainFrequency;
 
         //minutes until arrive
-        var minuntil = trainfrequency - trainremain;
+        var minUntil = trainFrequency - trainRemain;
 
         //next arrival timme
+        var nextArrival = moment().add(minUntil, "minutes").format("hh:mm")
+        console.log(nextArrival);
 
-        var nextarrival = moment().add(minuntil, "minutes").format("hh:mm")
-        console.log(nextarrival);
-
-
-        $("#Train-table > tbody").append("<tr><td>" + trainname + "</td><td>" + traindestination + "</td><td>" + trainfrequency + "</td><td>" + nextarrival + "</td><td>" + minuntil + "</td></tr>");
+        $("#Train-table > tbody").append("<tr><td>" + trainName + "</td><td>" + trainDestination + "</td><td>" + trainFrequency + "</td><td>" + nextArrival + "</td><td>" + minUntil + "</td></tr>");
 
 
     });
 });
 
 // Write a setInterval function that goes and updates the "minues away" value. If the value is < 5 turn it red 
-var currenttime = moment();
+var currentTime = moment();
 
-moment(currenttime).format("hh:mm");
+moment(currentTime).format("hh:mm");
 
 setInterval(function () {
-    window.location.replace();
-}, 5000);
+    window.location.reload();
+}, 60000);

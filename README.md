@@ -35,3 +35,6 @@ Will Code this app to calculate when the next train will arrive and remaining ti
 Users from many different machines must be able to view same train times.
 Will use setinterval to update the arrival time and time away.
 
+## Website:
+https://walidichcho.github.io/HW7-TRAIN/
+
